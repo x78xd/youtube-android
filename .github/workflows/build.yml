@@ -64,7 +64,7 @@ jobs:
         buildozer android debug
         
     - name: Upload APK artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4.6.2
       with:
         name: YouTube-Downloader-Debug-APK
         path: bin/*.apk
