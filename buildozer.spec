@@ -20,7 +20,7 @@ version = 1.0
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy,yt-dlp,certifi,urllib3,brotli,websockets,pycryptodomex
+requirements = python3,kivy,yt-dlp,brotlicffi,pycryptodomex
 
 # (str) Supported orientation (one of landscape, sensorLandscape, portrait or all)
 orientation = portrait
@@ -41,7 +41,7 @@ android.sdk = 31
 android.ndk = 25
 
 # (bool) Use --private data storage (True) or --dir public storage (False)
-android.private_storage = False
+android.private_storage = True
 
 # (str) Android NDK directory (if empty, it will be automatically downloaded.)
 #android.ndk_path =
