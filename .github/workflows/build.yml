@@ -7,6 +7,10 @@ on:
     branches: [ main, master ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+  actions: write
+
 jobs:
   build:
     runs-on: ubuntu-22.04
@@ -44,6 +48,12 @@ jobs:
         pip install Cython==0.29.36
         pip install buildozer==1.5.0 
         pip install colorama appdirs sh jinja2
+      env:
+        CYTHONIZE_DIRECTIVES: language_level=3
+
+    - name: Remove badsyntax test file
+      run: |
+        find . -name "badsyntax_pep3120.py" -exec rm -f {} \;
         
     - name: Cache Buildozer global directory
       uses: actions/cache@v3
@@ -59,6 +69,7 @@ jobs:
         
     - name: Build APK with Buildozer
       run: |
+        stty -echo 2>/dev/null || true
         export ANDROID_SDK_ROOT=$ANDROID_HOME
         export ANDROID_HOME=$ANDROID_HOME
         export PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
