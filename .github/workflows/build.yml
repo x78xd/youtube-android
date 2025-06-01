@@ -117,6 +117,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: bin/youtubedownloader-1.0-armeabi-v7a-debug.apk
+        asset_path: bin/*.apk
         asset_name: YouTubeDownloader-v${{ github.run_number }}.apk
         asset_content_type: application/vnd.android.package-archive
+
