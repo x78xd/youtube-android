@@ -74,6 +74,14 @@ jobs:
         export ANDROID_HOME=$ANDROID_HOME
         export PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
         buildozer android debug
+
+    - name: Get APK path
+      id: get_apk
+      run: |
+        APK_PATH=$(find bin/ -name "*.apk" | head -n 1)
+        echo "APK_PATH=$APK_PATH" >> $GITHUB_ENV
+        echo "::set-output name=apk_path::$APK_PATH"
+
         
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4.6.2
@@ -117,7 +125,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: bin/*.apk
+        asset_path: ${{ steps.get_apk.outputs.apk_path }}
         asset_name: YouTubeDownloader-v${{ github.run_number }}.apk
         asset_content_type: application/vnd.android.package-archive
 
