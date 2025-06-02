@@ -16,7 +16,7 @@ source.dir = .
 source.include_exts = py,png,jpg,kv,atlas
 
 # (str) Application versioning (method 1)
-version = 1.0
+version = 1.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
@@ -29,13 +29,13 @@ orientation = portrait
 fullscreen = 0
 
 # (int) Target Android API, should be as high as possible.
-android.api = 31
+android.api = 29
 
 # (int) Minimum API your APK will support.
 android.minapi = 21
 
 # (int) Android SDK version to use
-android.sdk = 31
+android.sdk = 29
 
 # (str) Android NDK version to use
 android.ndk = 25
