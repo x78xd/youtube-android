@@ -39,8 +39,8 @@ jobs:
     - name: Setup Android SDK
       uses: android-actions/setup-android@v2
       with:
-        api-level: 31
-        build-tools: 31.0.0
+        api-level: 29
+        build-tools: 29.0.0
 
     - name: Install Python dependencies
       run: |
@@ -69,12 +69,12 @@ jobs:
 
     - name: Install Android API Level 31
       run: |
-        yes | sdkmanager "platforms;android-31" "build-tools;31.0.0"
+        yes | sdkmanager "platforms;android-29" "build-tools;29.0.0"
 
     - name: Ensure Android SDK API 31 is installed and available
       run: |
         export ANDROID_SDK_ROOT=$ANDROID_HOME
-        yes | ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager "platforms;android-31" "build-tools;31.0.0"
+        yes | ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager "platforms;android-29" "build-tools;29.0.0"
         yes | ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --licenses
 
     - name: Build APK with Buildozer
