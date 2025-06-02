@@ -40,13 +40,13 @@ jobs:
       uses: android-actions/setup-android@v2
       with:
         api-level: 29
-        build-tools: 29.0.0
+        build-tools: 29.0.3
 
     - name: Install Python dependencies
       run: |
         python -m pip install --upgrade pip
         pip install Cython==0.29.36
-        pip install buildozer==1.5.0 
+        pip install buildozer==1.5.0
         pip install colorama appdirs sh jinja2
       env:
         CYTHONIZE_DIRECTIVES: language_level=3
@@ -67,15 +67,8 @@ jobs:
         path: .buildozer
         key: ${{ runner.os }}-${{ hashFiles('buildozer.spec') }}
 
-    - name: Install Android API Level 31
-      run: |
-        yes | sdkmanager "platforms;android-29" "build-tools;29.0.0"
-
-    - name: Ensure Android SDK API 31 is installed and available
-      run: |
-        export ANDROID_SDK_ROOT=$ANDROID_HOME
-        yes | ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager "platforms;android-29" "build-tools;29.0.0"
-        yes | ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --licenses
+    - name: Install Android API Level 29
+      run: yes | sdkmanager "platforms;android-29" "build-tools;29.0.3"
 
     - name: Build APK with Buildozer
       run: |
@@ -83,7 +76,6 @@ jobs:
         export ANDROID_HOME=$ANDROID_HOME
         export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$PATH
         buildozer android debug
-
 
     - name: Get APK path
       id: get_apk
@@ -109,18 +101,18 @@ jobs:
         release_name: YouTube Downloader v${{ github.run_number }}
         body: |
           Descarga automática del APK de YouTube Downloader
-          
+
           ## Características:
           - Descarga videos de YouTube en formato MP4
           - Descarga audio en formato MP3
           - Interfaz simple y fácil de usar
           - Soporte para Android 5.0+
-          
+
           ## Instalación:
           1. Descarga el archivo APK
           2. Habilita "Orígenes desconocidos" en tu Android
           3. Instala el APK
-          
+
           ## Permisos necesarios:
           - Almacenamiento (para guardar descargas)
           - Internet (para descargar videos)
