@@ -29,13 +29,13 @@ orientation = portrait
 fullscreen = 0
 
 # (int) Target Android API, should be as high as possible.
-android.api = 29
+android.api = 30
 
 # (int) Minimum API your APK will support.
 android.minapi = 21
 
 # (int) Android SDK version to use
-android.sdk = 29
+android.sdk = 30
 
 # (str) Android NDK version to use
 android.ndk = 25
