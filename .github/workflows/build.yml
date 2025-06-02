@@ -68,8 +68,7 @@ jobs:
         export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$PATH
         yes | sdkmanager "platforms;android-31" "build-tools;34.0.0"
   
-    - name: Verify Android SDK Installation
-      run: sdkmanager --list | grep "platforms;android-31"
+    
 
     - name: Build APK with Buildozer
       run: |
