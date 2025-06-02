@@ -18,81 +18,6 @@ import threading
 from android.permissions import request_permissions, Permission
 from android.storage import primary_external_storage_path
 
-class ModernButton(Button):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.background_normal = ''
-        self.background_down = ''
-        self.bind(size=self.update_graphics, pos=self.update_graphics)
-        
-    def update_graphics(self, *args):
-        self.canvas.before.clear()
-        with self.canvas.before:
-            Color(0.2, 0.6, 1, 1)  # Azul moderno
-            RoundedRectangle(pos=self.pos, size=self.size, radius=[dp(10)])
-
-class ModernToggleButton(ToggleButton):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.background_normal = ''
-        self.background_down = ''
-        self.bind(size=self.update_graphics, pos=self.update_graphics, state=self.update_graphics)
-        
-    def update_graphics(self, *args):
-        self.canvas.before.clear()
-        with self.canvas.before:
-            if self.state == 'down':
-                Color(0.2, 0.6, 1, 1)  # Azul cuando está activo
-            else:
-                Color(0.3, 0.3, 0.3, 1)  # Gris cuando no está activo
-            RoundedRectangle(pos=self.pos, size=self.size, radius=[dp(8)])
-
-class ModernTextInput(TextInput):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.background_normal = ''
-        self.background_active = ''
-        self.bind(size=self.update_graphics, pos=self.update_graphics, focus=self.update_graphics)
-        
-    def update_graphics(self, *args):
-        self.canvas.before.clear()
-        with self.canvas.before:
-            Color(0.95, 0.95, 0.95, 1)  # Fondo blanco
-            RoundedRectangle(pos=self.pos, size=self.size, radius=[dp(8)])
-            if self.focus:
-                Color(0.2, 0.6, 1, 1)  # Borde azul cuando está enfocado
-            else:
-                Color(0.8, 0.8, 0.8, 1)  # Borde gris normal
-            Line(rounded_rectangle=(self.x, self.y, self.width, self.height, dp(8)), width=2)
-
-class ModernSpinner(Spinner):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.background_normal = ''
-        self.background_down = ''
-        self.bind(size=self.update_graphics, pos=self.update_graphics)
-        
-    def update_graphics(self, *args):
-        self.canvas.before.clear()
-        with self.canvas.before:
-            Color(0.95, 0.95, 0.95, 1)
-            RoundedRectangle(pos=self.pos, size=self.size, radius=[dp(8)])
-            Color(0.8, 0.8, 0.8, 1)
-            Line(rounded_rectangle=(self.x, self.y, self.width, self.height, dp(8)), width=1)
-
-class RoundedCard(Widget):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.bind(size=self.update_graphics, pos=self.update_graphics)
-        
-    def update_graphics(self, *args):
-        self.canvas.before.clear()
-        with self.canvas.before:
-            Color(1, 1, 1, 0.1)  # Fondo semi-transparente
-            RoundedRectangle(pos=self.pos, size=self.size, radius=[dp(15)])
-            Color(0.8, 0.8, 0.8, 0.3)  # Borde sutil
-            Line(rounded_rectangle=(self.x, self.y, self.width, self.height, dp(15)), width=1)
-
 class YouTubeDownloaderApp(App):
     def build(self):
         # Solicitar permisos de almacenamiento
@@ -115,10 +40,10 @@ class YouTubeDownloaderApp(App):
         os.makedirs(self.video_dir, exist_ok=True)
         os.makedirs(self.audio_dir, exist_ok=True)
         
-        # Layout principal con gradiente de fondo
+        # Layout principal con estilo mejorado
         main_layout = BoxLayout(orientation='vertical', padding=dp(25), spacing=dp(15))
         
-        # Fondo con gradiente
+        # Fondo con gradiente elegante
         with main_layout.canvas.before:
             Color(0.1, 0.1, 0.15, 1)  # Fondo oscuro elegante
             self.bg_rect = RoundedRectangle(pos=main_layout.pos, size=main_layout.size)
@@ -156,15 +81,13 @@ class YouTubeDownloaderApp(App):
         main_layout.add_widget(separator)
         
         # Card contenedor para la entrada de URL
-        url_card = RoundedCard(size_hint_y=None, height=dp(70))
+        url_card = self.create_card(dp(70))
         url_layout = BoxLayout(padding=dp(15))
         
-        self.url_input = ModernTextInput(
+        self.url_input = self.create_modern_textinput(
             hint_text='🔗 Pega la URL del video de YouTube aquí...',
             multiline=False,
-            font_size='16sp',
-            foreground_color=(0.2, 0.2, 0.2, 1),
-            hint_text_color=(0.6, 0.6, 0.6, 1)
+            font_size='16sp'
         )
         self.url_input.bind(text=self.on_url_change)
         
@@ -173,10 +96,10 @@ class YouTubeDownloaderApp(App):
         main_layout.add_widget(url_card)
         
         # Card para thumbnail y título
-        info_card = RoundedCard(size_hint_y=None, height=dp(280))
+        info_card = self.create_card(dp(280))
         info_layout = BoxLayout(orientation='vertical', padding=dp(20), spacing=dp(10))
         
-        # Imagen thumbnail con bordes redondeados
+        # Imagen thumbnail
         self.thumbnail = AsyncImage(
             source='',
             size_hint_y=None,
@@ -184,7 +107,7 @@ class YouTubeDownloaderApp(App):
         )
         info_layout.add_widget(self.thumbnail)
         
-        # Título del video con mejor tipografía
+        # Título del video
         self.video_title = Label(
             text='Selecciona un video para ver la información',
             text_size=(None, None),
@@ -202,24 +125,12 @@ class YouTubeDownloaderApp(App):
         main_layout.add_widget(info_card)
         
         # Card para controles de formato
-        format_card = RoundedCard(size_hint_y=None, height=dp(80))
+        format_card = self.create_card(dp(80))
         format_main_layout = BoxLayout(padding=dp(20))
-        
         format_layout = BoxLayout(spacing=dp(15))
         
-        self.video_btn = ModernToggleButton(
-            text='🎬 Video', 
-            group='format', 
-            state='down',
-            font_size='16sp',
-            bold=True
-        )
-        self.audio_btn = ModernToggleButton(
-            text='🎵 Audio', 
-            group='format',
-            font_size='16sp',
-            bold=True
-        )
+        self.video_btn = self.create_modern_toggle_button('🎬 Video', 'format', 'down')
+        self.audio_btn = self.create_modern_toggle_button('🎵 Audio', 'format')
         
         self.video_btn.bind(state=self.on_format_change)
         self.audio_btn.bind(state=self.on_format_change)
@@ -231,14 +142,13 @@ class YouTubeDownloaderApp(App):
         main_layout.add_widget(format_card)
         
         # Card para selector de calidad
-        quality_card = RoundedCard(size_hint_y=None, height=dp(80))
+        quality_card = self.create_card(dp(80))
         quality_layout = BoxLayout(padding=dp(20))
         
-        self.quality_spinner = ModernSpinner(
+        self.quality_spinner = self.create_modern_spinner(
             text='⚙️ Selecciona calidad',
             values=[],
-            font_size='16sp',
-            color=(0.2, 0.2, 0.2, 1)
+            font_size='16sp'
         )
         
         quality_layout.add_widget(self.quality_spinner)
@@ -254,19 +164,17 @@ class YouTubeDownloaderApp(App):
         )
         main_layout.add_widget(self.progress_bar)
         
-        # Botón de descarga mejorado
-        self.download_btn = ModernButton(
+        # Botón de descarga
+        self.download_btn = self.create_modern_button(
             text='⬇️ DESCARGAR',
             size_hint_y=None,
             height=dp(60),
-            font_size='18sp',
-            bold=True,
-            color=(1, 1, 1, 1)
+            font_size='18sp'
         )
         self.download_btn.bind(on_press=self.download_video)
         main_layout.add_widget(self.download_btn)
         
-        # Estado con mejor diseño
+        # Estado
         self.status_label = Label(
             text='✨ Listo para descargar',
             size_hint_y=None,
@@ -286,6 +194,92 @@ class YouTubeDownloaderApp(App):
     def update_bg(self, instance, value):
         self.bg_rect.pos = instance.pos
         self.bg_rect.size = instance.size
+    
+    def create_card(self, height):
+        """Crea una tarjeta con bordes redondeados"""
+        card = Widget(size_hint_y=None, height=height)
+        def update_card_graphics(*args):
+            card.canvas.before.clear()
+            with card.canvas.before:
+                Color(1, 1, 1, 0.1)  # Fondo semi-transparente
+                RoundedRectangle(pos=card.pos, size=card.size, radius=[dp(15)])
+                Color(0.8, 0.8, 0.8, 0.3)  # Borde sutil
+                Line(rounded_rectangle=(card.x, card.y, card.width, card.height, dp(15)), width=1)
+        card.bind(size=update_card_graphics, pos=update_card_graphics)
+        return card
+    
+    def create_modern_button(self, **kwargs):
+        """Crea un botón moderno con bordes redondeados"""
+        btn = Button(background_normal='', background_down='', bold=True, color=(1, 1, 1, 1), **kwargs)
+        def update_btn_graphics(*args):
+            btn.canvas.before.clear()
+            with btn.canvas.before:
+                Color(0.2, 0.6, 1, 1)  # Azul moderno
+                RoundedRectangle(pos=btn.pos, size=btn.size, radius=[dp(10)])
+        btn.bind(size=update_btn_graphics, pos=update_btn_graphics)
+        return btn
+    
+    def create_modern_toggle_button(self, text, group, state='normal'):
+        """Crea un toggle button moderno"""
+        btn = ToggleButton(
+            text=text, 
+            group=group, 
+            state=state,
+            background_normal='', 
+            background_down='',
+            font_size='16sp',
+            bold=True
+        )
+        def update_toggle_graphics(*args):
+            btn.canvas.before.clear()
+            with btn.canvas.before:
+                if btn.state == 'down':
+                    Color(0.2, 0.6, 1, 1)  # Azul cuando está activo
+                else:
+                    Color(0.3, 0.3, 0.3, 1)  # Gris cuando no está activo
+                RoundedRectangle(pos=btn.pos, size=btn.size, radius=[dp(8)])
+        btn.bind(size=update_toggle_graphics, pos=update_toggle_graphics, state=update_toggle_graphics)
+        return btn
+    
+    def create_modern_textinput(self, **kwargs):
+        """Crea un campo de texto moderno"""
+        text_input = TextInput(
+            background_normal='', 
+            background_active='',
+            foreground_color=(0.2, 0.2, 0.2, 1),
+            hint_text_color=(0.6, 0.6, 0.6, 1),
+            **kwargs
+        )
+        def update_input_graphics(*args):
+            text_input.canvas.before.clear()
+            with text_input.canvas.before:
+                Color(0.95, 0.95, 0.95, 1)  # Fondo blanco
+                RoundedRectangle(pos=text_input.pos, size=text_input.size, radius=[dp(8)])
+                if text_input.focus:
+                    Color(0.2, 0.6, 1, 1)  # Borde azul cuando está enfocado
+                else:
+                    Color(0.8, 0.8, 0.8, 1)  # Borde gris normal
+                Line(rounded_rectangle=(text_input.x, text_input.y, text_input.width, text_input.height, dp(8)), width=2)
+        text_input.bind(size=update_input_graphics, pos=update_input_graphics, focus=update_input_graphics)
+        return text_input
+    
+    def create_modern_spinner(self, **kwargs):
+        """Crea un spinner moderno"""
+        spinner = Spinner(
+            background_normal='', 
+            background_down='',
+            color=(0.2, 0.2, 0.2, 1),
+            **kwargs
+        )
+        def update_spinner_graphics(*args):
+            spinner.canvas.before.clear()
+            with spinner.canvas.before:
+                Color(0.95, 0.95, 0.95, 1)
+                RoundedRectangle(pos=spinner.pos, size=spinner.size, radius=[dp(8)])
+                Color(0.8, 0.8, 0.8, 1)
+                Line(rounded_rectangle=(spinner.x, spinner.y, spinner.width, spinner.height, dp(8)), width=1)
+        spinner.bind(size=update_spinner_graphics, pos=update_spinner_graphics)
+        return spinner
     
     def on_url_change(self, instance, value):
         if 'youtube.com' in value or 'youtu.be' in value:
@@ -457,12 +451,11 @@ class YouTubeDownloaderApp(App):
         content.add_widget(msg_label)
         
         # Botón de cerrar mejorado
-        close_btn = ModernButton(
+        close_btn = self.create_modern_button(
             text='✖️ Cerrar', 
             size_hint_y=None, 
             height=dp(50),
-            font_size='16sp',
-            bold=True
+            font_size='16sp'
         )
         content.add_widget(close_btn)
         
