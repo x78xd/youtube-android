@@ -15,24 +15,37 @@ from kivy.metrics import dp
 import yt_dlp
 import os
 import threading
-from android.permissions import request_permissions, Permission
-from android.storage import primary_external_storage_path
+
+# Importar APIs de Android de manera opcional
+try:
+    from android.permissions import request_permissions, Permission
+    from android.storage import primary_external_storage_path
+    ANDROID_AVAILABLE = True
+except ImportError:
+    ANDROID_AVAILABLE = False
 
 class YouTubeDownloaderApp(App):
     def build(self):
-        # Solicitar permisos de almacenamiento
-        request_permissions([
-            Permission.WRITE_EXTERNAL_STORAGE,
-            Permission.READ_EXTERNAL_STORAGE,
-            Permission.INTERNET
-        ])
+        # Solicitar permisos de almacenamiento solo en Android
+        if ANDROID_AVAILABLE:
+            request_permissions([
+                Permission.WRITE_EXTERNAL_STORAGE,
+                Permission.READ_EXTERNAL_STORAGE,
+                Permission.INTERNET
+            ])
         
-        # Directorios de descarga en Android
+        # Directorios de descarga
         try:
-            self.external_path = primary_external_storage_path()
-            self.video_dir = os.path.join(self.external_path, "Download", "Videos")
-            self.audio_dir = os.path.join(self.external_path, "Download", "Audios")
+            if ANDROID_AVAILABLE:
+                self.external_path = primary_external_storage_path()
+                self.video_dir = os.path.join(self.external_path, "Download", "Videos")
+                self.audio_dir = os.path.join(self.external_path, "Download", "Audios")
+            else:
+                # Para Windows/Linux/Mac
+                self.video_dir = os.path.join(os.path.expanduser("~"), "Downloads", "Videos")
+                self.audio_dir = os.path.join(os.path.expanduser("~"), "Downloads", "Audios")
         except:
+            # Fallback para cualquier sistema
             self.video_dir = "Videos"
             self.audio_dir = "Audios"
         
@@ -513,4 +526,10 @@ class YouTubeDownloaderApp(App):
         self.popup_rect.size = size
 
 if __name__ == '__main__':
+    # Información del sistema
+    if ANDROID_AVAILABLE:
+        print("🤖 Ejecutando en Android")
+    else:
+        print("💻 Ejecutando en Desktop (Windows/Linux/Mac)")
+    
     YouTubeDownloaderApp().run()
