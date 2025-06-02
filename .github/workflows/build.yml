@@ -62,12 +62,7 @@ jobs:
         path: .buildozer
         key: ${{ runner.os }}-${{ hashFiles('buildozer.spec') }}
 
-    - name: Install Android API Level 31
-      run: |
-        export ANDROID_SDK_ROOT=$ANDROID_HOME
-        export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$PATH
-        yes | sdkmanager "platforms;android-31" "build-tools;34.0.0"
-  
+    
     
 
     - name: Build APK with Buildozer
