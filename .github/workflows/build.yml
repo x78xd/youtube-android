@@ -36,6 +36,11 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v2
+      with:
+        api-level: 31
+        build-tools: 34.0.0
 
     - name: Install Python dependencies
       run: |
@@ -62,8 +67,8 @@ jobs:
         path: .buildozer
         key: ${{ runner.os }}-${{ hashFiles('buildozer.spec') }}
 
-    
-    
+    - name: Install Android API Level 31
+      run: yes | sdkmanager "platforms;android-31" "build-tools;34.0.0"
 
     - name: Build APK with Buildozer
       run: |
