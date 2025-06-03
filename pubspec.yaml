@@ -1,0 +1,25 @@
+name: youtube_downloader_app
+description: Aplicación para descargar videos de YouTube en Android
+publish_to: 'none' # Esto evita que se publique en pub.dev
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.6
+  http: ^1.2.1
+  url_launcher: ^6.2.6
+  path_provider: ^2.1.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^3.0.1
+
+flutter:
+  uses-material-design: true
