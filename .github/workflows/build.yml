@@ -1,0 +1,57 @@
+name: Flutter Android Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Debug APK
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.19.0'  # última estable en mayo 2025
+
+    - name: Install Flutter dependencies
+      run: flutter pub get
+
+    - name: Run Flutter tests
+      run: flutter test
+
+    - name: Build APK (Debug)
+      run: flutter build apk --debug
+
+    - name: Create GitHub Release
+      if: github.ref == 'refs/heads/main'
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: v${{ github.run_number }}
+        name: YouTube Downloader v${{ github.run_number }}
+        body: |
+          ✅ **APK generado automáticamente** para pruebas.
+          
+          ### Características:
+          - App construida con Flutter
+          - Versión debug para testeo
+          - Compatible con Android 5.0+
+          
+          ⚠️ *Esta versión es solo para desarrollo/testing.*
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload APK to Release
+      if: github.ref == 'refs/heads/main'
+      uses: softprops/action-gh-release@v1
+      with:
+        files: build/app/outputs/flutter-apk/app-debug.apk
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
